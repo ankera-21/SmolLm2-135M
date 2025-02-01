@@ -553,6 +553,108 @@ Alice was a big, kind and beautiful place where people lived in the world. They 
 One day, a wise old owl named Timmy decided to visit a new town. She asked her friend, "What is the people who
 ```
 
+## Model Retraining from checkpoint
+```
+2025-02-01 07:53:06,063 - INFO - {'checkpoints': {'checkpoint_interval': 2000, 'checkpoints_path': 'checkpoints', 'checkpoints_path_is_shared_file_system': False, 'resume_checkpoint_path': None, 'save_final_state': False, 'save_initial_state': False}, 'data_stages': [{'data': {'dataset': {'dataset_folder': ['datasets/smollm2-corpus'], 'dataset_weights': [1.0]}, 'num_loading_workers': 0, 'seed': 8}, 'name': 'stable phase', 'start_training_step': 1}], 'general': {'benchmark_csv_path': None, 'consumed_train_samples': None, 'ignore_sanity_checks': True, 'project': 'smollm2', 'run': 'smollm2-135M', 'seed': 8, 'step': None}, 'logging': {'iteration_step_info_interval': 1, 'log_level': 'info', 'log_level_replica': 'info'}, 'model': {'ddp_bucket_cap_mb': 25, 'dtype': 'bfloat16', 'init_method': {'std': 0.041666666666666664}, 'make_vocab_size_divisible_by': 1, 'model_config': {'bos_token_id': 0, 'eos_token_id': 0, 'hidden_act': 'silu', 'hidden_size': 576, 'initializer_range': 0.041666666666666664, 'intermediate_size': 1536, 'is_llama_config': True, 'max_position_embeddings': 2048, 'num_attention_heads': 9, 'num_hidden_layers': 30, 'num_key_value_heads': 3, 'pad_token_id': None, 'pretraining_tp': 1, 'rms_norm_eps': 1e-05, 'rope_interleaved': False, 'rope_scaling': None, 'rope_theta': 10000.0, 'tie_word_embeddings': True, 'use_cache': True, 'vocab_size': 49152, 's3_bucket': 'smollm2-train-jan-25-era3', 's3_checkpoint_folder': 'checkpoints', 's3_log_folder': 'logs', 's3_log_file_name': 'training.log'}}, 'optimizer': {'accumulate_grad_in_fp32': True, 'clip_grad': 1.0, 'learning_rate_scheduler': {'learning_rate': 0.003, 'lr_decay_starting_step': 1600000, 'lr_decay_steps': 400000, 'lr_decay_style': 'linear', 'lr_warmup_steps': 2000, 'lr_warmup_style': 'linear', 'min_decay_lr': 0}, 'optimizer_factory': {'adam_beta1': 0.9, 'adam_beta2': 0.95, 'adam_eps': 1e-08, 'name': 'adamW', 'torch_adam_is_fused': True}, 'weight_decay': 0.01, 'zero_stage': 0}, 'parallelism': {'dp': 64, 'expert_parallel_size': 1, 'pp': 1, 'pp_engine': '1f1b', 'recompute_layer': False, 'tp': 1, 'tp_linear_async_communication': True, 'tp_mode': 'REDUCE_SCATTER', 'tp_recompute_allgather': True}, 'profiler': None, 'tokenizer': {'tokenizer_max_length': None, 'tokenizer_name_or_path': 'HuggingFaceTB/cosmo2-tokenizer', 'tokenizer_revision': None}, 'tokens': {'batch_accumulation_per_replica': 1, 'limit_test_batches': 0, 'limit_val_batches': 0, 'micro_batch_size': 16, 'sequence_length': 1024, 'train_steps': 2000000, 'val_check_interval': 1000}}
+2025-02-01 07:53:10,556 - INFO - OptimizedModule(
+  (_orig_mod): LlamaModel(
+    (embed_tokens): Embedding(49152, 576)
+    (rotary_emb): RotaryPositionalEmbedding()
+    (layers): ModuleList(
+      (0-29): 30 x LlamaDecoderLayer(
+        (self_attn): LlamaAttention(
+          (q_proj): Linear(in_features=576, out_features=576, bias=False)
+          (k_proj): Linear(in_features=576, out_features=192, bias=False)
+          (v_proj): Linear(in_features=576, out_features=192, bias=False)
+          (o_proj): Linear(in_features=576, out_features=576, bias=False)
+          (rotary_pos_emb): RotaryPositionalEmbedding()
+        )
+        (mlp): LlamaMLP(
+          (gate_proj): Linear(in_features=576, out_features=1536, bias=False)
+          (up_proj): Linear(in_features=576, out_features=1536, bias=False)
+          (down_proj): Linear(in_features=1536, out_features=576, bias=False)
+          (act_fn): SiLU()
+        )
+        (input_layernorm): LlamaRMSNorm()
+        (post_attention_layernorm): LlamaRMSNorm()
+      )
+    )
+    (norm): LlamaRMSNorm()
+    (lm_head): Linear(in_features=576, out_features=49152, bias=False)
+  )
+)
+2025-02-01 07:53:10,557 - INFO - ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2025-02-01 07:53:11,225 - INFO - tokenizer parallelism set to false
+2025-02-01 07:53:11,226 - INFO - dataset loading config set
+2025-02-01 07:53:12,126 - INFO - dataset loaded
+2025-02-01 07:53:12,127 - INFO - Loading checkpoint from weights.pth
+2025-02-01 07:53:13,373 - INFO - Loaded checkpoint from step 37000 with loss 2.859199594854044
+2025-02-01 07:53:13,374 - INFO - Training with learning rate schedule:
+2025-02-01 07:53:13,374 - INFO - Max LR: 0.0003
+2025-02-01 07:53:13,374 - INFO - Warmup Steps: 3000
+2025-02-01 07:53:13,374 - INFO - Max Steps: 60000
+2025-02-01 07:53:13,374 - INFO - Min LR: 1.4999999999999999e-05
+2025-02-01 07:53:13,374 - INFO - Gradient Accumulation Steps: 2
+2025-02-01 07:53:13,374 - INFO - Effective Batch Size: 32
+2025-02-01 07:53:13,374 - INFO - 
+GPU Memory Stats at start of training:
+2025-02-01 07:53:13,374 - INFO - GPU Memory allocated: 2085.91 MB
+2025-02-01 07:53:13,374 - INFO - GPU Memory reserved: 2112.00 MB
+2025-02-01 07:53:13,374 - INFO - Max GPU Memory allocated: 2085.91 MB
+2025-02-01 07:55:28,704 - INFO - Batch 1, Running Avg Loss: 2.99620
+2025-02-01 07:55:28,705 - INFO - 
+GPU Memory Stats at step 37000:
+2025-02-01 07:55:28,705 - INFO - GPU Memory allocated: 4170.25 MB
+2025-02-01 07:55:28,705 - INFO - GPU Memory reserved: 17038.00 MB
+2025-02-01 07:55:28,705 - INFO - Max GPU Memory allocated: 16981.18 MB
+2025-02-01 07:55:28,705 - INFO - learning rate: 0.00000003
+2025-02-01 07:55:28,705 - INFO - Ep 1 (Step 037000): Avg loss 2.996 | 16384 tokens seen
+2025-02-01 07:55:28,705 - INFO - optimizer lr: 0.00000000
+2025-02-01 07:55:28,705 - INFO - scheduler lr: 0.00000003
+2025-02-01 07:55:28,706 - INFO - random_topk: 6
+2025-02-01 07:55:28,706 - INFO - random_temperature: 0.8732126585592646
+2025-02-01 07:55:28,706 - INFO - global step 37000 , batch_idx 0 => generating text
+2025-02-01 07:55:28,706 - INFO - Generating on device cuda
+2025-02-01 07:57:18,024 - INFO - ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2025-02-01 07:57:18,025 - INFO - Once Upon a Time far far away in a galaxy where humans had just covered. He wanted to explore some of the beautiful world, so he could learn about this beautiful place called "The Wung of the "Fir-Fant."
+
+The first part of this new country is called 'A' and 'The Sita.' It was the word 'A' or 'A' that is like a special place that is just a fancy word or group. The first person is to find a special type of music called "The B-H-H-B-E-K-M-K-K-M-D. These books often feature books and stories about how they can be used for a particular word-making, but don't worry – we're going to break them down together!
+
+One day, the friends found out there was a big book called the "The Noh-E-H-E-D-K-H-D-B. They would be the word 'T-B-D-K-K-K-K-B-D-K-K-B-D-D. The main character is a type of music that has been a great way to explore and express the world around us.
+
+Next, they are reading about
+2025-02-01 07:57:18,025 - INFO - ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2025-02-01 07:57:28,977 - INFO - Model saved to S3: s3://smollm2-train-jan-25-era3/checkpoints/model_37000_steps_avg_loss_2.99620_optimizer_lr_0.00000000.pth
+2025-02-01 07:57:29,067 - INFO - Log saved to S3: s3://smollm2-train-jan-25-era3/logs/training.log
+2025-02-01 07:57:29,067 - INFO - Batch 0 finished
+2025-02-01 07:57:29,067 - INFO - ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2025-02-01 07:57:46,833 - INFO - Batch 26, Running Avg Loss: 2.71064
+2025-02-01 07:57:57,710 - INFO - Batch 51, Running Avg Loss: 2.74141
+2025-02-01 07:58:08,563 - INFO - Batch 76, Running Avg Loss: 2.73782
+2025-02-01 07:58:19,440 - INFO - Batch 101, Running Avg Loss: 2.76341
+2025-02-01 07:58:19,440 - INFO - Batch 100 finished
+2025-02-01 07:58:19,440 - INFO - ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2025-02-01 07:58:30,293 - INFO - Batch 126, Running Avg Loss: 2.76040
+2025-02-01 07:58:41,169 - INFO - Batch 151, Running Avg Loss: 2.75682
+2025-02-01 07:58:52,023 - INFO - Batch 176, Running Avg Loss: 2.75674
+2025-02-01 07:59:02,914 - INFO - Batch 201, Running Avg Loss: 2.74882
+2025-02-01 07:59:02,915 - INFO - Batch 200 finished
+2025-02-01 07:59:02,915 - INFO - ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2025-02-01 07:59:13,772 - INFO - Batch 226, Running Avg Loss: 2.75468
+2025-02-01 07:59:24,652 - INFO - Batch 251, Running Avg Loss: 2.75046
+2025-02-01 07:59:35,508 - INFO - Batch 276, Running Avg Loss: 2.75354
+2025-02-01 07:59:46,386 - INFO - Batch 301, Running Avg Loss: 2.75005
+2025-02-01 07:59:46,387 - INFO - Batch 300 finished
+2025-02-01 07:59:46,387 - INFO - ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2025-02-01 07:59:57,240 - INFO - Batch 326, Running Avg Loss: 2.75391
+2025-02-01 08:00:08,116 - INFO - Batch 351, Running Avg Loss: 2.75350
+2025-02-01 08:00:18,967 - INFO - Batch 376, Running Avg Loss: 2.75347
+2025-02-01 08:00:29,844 - INFO - Batch 401, Running Avg Loss: 2.75253
+2025-02-01 08:00:29,844 - INFO - Batch 400 finished
+2025-02-01 08:00:29,844 - INFO - ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2025-02-01 08:00:40,696 - INFO - Batch 426, Running Avg Loss: 2.74948
+
+```
 ## Conculsion
 
 
